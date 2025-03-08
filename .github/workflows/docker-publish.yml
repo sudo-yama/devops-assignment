@@ -23,9 +23,13 @@ jobs:
       - name: Extract branch name
         run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
 
+      - name: Extract short commit hash
+        run: echo "SHORT_COMMIT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: weerapatx/hello-go-api:${{ env.BRANCH_NAME }}
+          tags: |
+            weerapatx/hello-go-api:${{ env.BRANCH_NAME }}-${{ env.SHORT_COMMIT }}
