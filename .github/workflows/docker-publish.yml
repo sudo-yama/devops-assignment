@@ -32,4 +32,4 @@ jobs:
           context: .
           push: true
           tags: |
-            weerapatx/hello-go-api:${{ env.BRANCH_NAME }}-${{ env.SHORT_COMMIT }}
+            ${{ env.REGISTRY }}:${{ env.BRANCH_NAME }}-${{ env.SHORT_COMMIT }}
