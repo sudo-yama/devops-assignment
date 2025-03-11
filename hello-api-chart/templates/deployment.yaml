@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: hello-api
+    labels:
+        app: hello-api
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: hello-api
+    template:
+        metadata:
+            labels:
+                app: hello-api
+        spec:
+            containers: 
+            - name: hello-api
+              image: "weerapatx/hello-go-api:develop-996da53"
+              ports:
+              - name: http 
+                containerPort: 8080
