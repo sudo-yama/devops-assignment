@@ -32,4 +32,4 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ env.REGISTRY }}:${{ env.BRANCH_NAME }}-${{ env.SHORT_COMMIT }}
+            ${{ secrets.REGISTRY }}:${{ env.BRANCH_NAME }}-${{ env.SHORT_COMMIT }}
