@@ -1,29 +1,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: hello-api
-    labels:
-        app: hello-api
+  name: {{ .Release.Name }}-hello-api
+  labels:
+    app: hello-api
 spec:
-    replicas: 1
-    selector:
-        matchLabels:
-            app: hello-api
-    template:
-        metadata:
-            labels:
-                app: hello-api
-        spec:
-            containers: 
-            - name: hello-api
-              image: "weerapatx/hello-go-api:develop-996da53"
-              ports:
-              - name: http 
-                containerPort: 8080
-              resources:
-                requests:
-                  cpu: "100m"
-                  memory: "128Mi"
-                limits:
-                  cpu: "500m"
-                  memory: "256Mi"
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: hello-api
+  template:
+    metadata:
+      labels:
+        app: hello-api
+    spec:
+      containers:
+      - name: {{ .Values.container.name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.container.port }}
+        resources:
+          requests:
+            cpu: {{ .Values.resources.requests.cpu }}
+            memory: {{ .Values.resources.requests.memory }}
+          limits:
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.memory }}

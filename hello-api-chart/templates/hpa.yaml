@@ -1,25 +1,31 @@
+{{- if .Values.hpa.enabled }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: hello-api-hpa
+  name: {{ .Release.Name }}-hello-api-hpa
   namespace: default
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: hello-api
-  minReplicas: 2
-  maxReplicas: 4
+    name: {{ .Release.Name }}-hello-api
+  minReplicas: {{ .Values.hpa.minReplicas }}
+  maxReplicas: {{ .Values.hpa.maxReplicas }}
   metrics:
+    {{- if .Values.hpa.metrics.cpu.enabled }}
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 50
+          averageUtilization: {{ .Values.hpa.metrics.cpu.averageUtilization | default 50 }}
+    {{- end }}
+    {{- if .Values.hpa.metrics.memory.enabled }}
     - type: Resource
       resource:
         name: memory
         target:
           type: Utilization
-          averageUtilization: 70
+          averageUtilization: {{ .Values.hpa.metrics.memory.averageUtilization | default 70 }}
+    {{- end }}
+{{- end }}
