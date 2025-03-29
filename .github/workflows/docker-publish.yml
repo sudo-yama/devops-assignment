@@ -26,6 +26,7 @@ jobs:
           password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Extract short commit hash
+        id: get_commit
         run: echo "short_commit=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Build and Push Docker Image
@@ -34,8 +35,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.REGISTRY }}:${{ steps.commit_hash.outputs.short_commit }}
-      
+            ${{ secrets.REGISTRY }}:${{ steps.get_commit.outputs.short_commit }}
+
   commit-to-another-repo:
     needs: build-and-push
     runs-on: ubuntu-latest
