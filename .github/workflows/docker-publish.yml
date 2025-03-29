@@ -1,10 +1,14 @@
 name: Build and Push Docker Image
-
+  
 on:
   push:
     branches:
       - develop
       - main  
+
+env:
+  helm_path: "helm/microservices/golang-api"
+
 
 jobs:
   build-and-push:
@@ -20,9 +24,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      - name: Extract branch name
-        run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
-
       - name: Extract short commit hash
         run: echo "SHORT_COMMIT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
@@ -32,4 +33,36 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.REGISTRY }}:${{ env.BRANCH_NAME }}-${{ env.SHORT_COMMIT }}
+            ${{ secrets.REGISTRY }}:${{ env.SHORT_COMMIT }}
+      
+  commit-to-another-repo:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone Target Repository
+        uses: actions/checkout@v4
+        with:
+          repository: sudo-yama/devops-assignment-cd
+          token: ${{ secrets.GITACTIONS }}
+          fetch-depth: 0
+
+      - name: Configure Git user   
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+      
+      - name: Checkout `develop` branches
+        run: |
+          git checkout develop
+
+      - name: Update image tag
+        run: |
+          cd ${{ env.helm_path }}
+          yq -i '.image.tag = ${{ env.SHORT_COMMIT }}' values-dev.yaml
+          git add values-dev.yaml
+          git commit -m "Auto update image tag to ${{ env.SHORT_COMMIT }} from CI" || echo "No changes to commit"
+
+      - name: Push Changes
+        run: |
+          git push origin develop
