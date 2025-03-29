@@ -3,8 +3,19 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
+      - main
       - develop
-      - main  
+      - 'feature/*' 
+      - 'fix/*'  
+      - 'hotfix/*'  
+  
+  pull_request:
+    branches:
+      - main
+      - develop
+      - 'feature/*'  
+      - 'fix/*'
+      - 'hotfix/*'
 
 env:
   helm_path: "helm/microservices/golang-api"
