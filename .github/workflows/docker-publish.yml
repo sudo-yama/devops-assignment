@@ -51,18 +51,12 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-      
-      - name: Checkout `develop` branches
-        run: |
-          git checkout develop
 
       - name: Update image tag
         run: |
+          git checkout develop
           cd devops-assignment-cd/${{ env.helm_path }}
           yq -i '.image.tag = ${{ env.SHORT_COMMIT }}' values-dev.yaml
           git add values-dev.yaml
           git commit -m "Auto update image tag to ${{ env.SHORT_COMMIT }} from CI" || echo "No changes to commit"
-
-      - name: Push Changes
-        run: |
           git push origin develop
