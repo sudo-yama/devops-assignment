@@ -41,11 +41,9 @@ jobs:
 
     steps:
       - name: Clone Target Repository
-        uses: actions/checkout@v4
-        with:
-          repository: sudo-yama/devops-assignment-cd
-          token: ${{ secrets.GITACTIONS }}
-          fetch-depth: 0
+        run: |
+          git clone https://x-access-token:${{ secrets.GITACTIONS }}@github.com/sudo-yama/devops-assignment-cd.git
+          ls -R
 
       - name: Configure Git user   
         run: |
