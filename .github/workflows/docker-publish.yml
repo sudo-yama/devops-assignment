@@ -56,6 +56,8 @@ jobs:
         run: |
           git checkout develop
           cd devops-assignment-cd/${{ env.helm_path }}
+          ls -R
+          pwd
           yq -i '.image.tag = ${{ env.SHORT_COMMIT }}' values-dev.yaml
           git add values-dev.yaml
           git commit -m "Auto update image tag to ${{ env.SHORT_COMMIT }} from CI" || echo "No changes to commit"
