@@ -61,5 +61,5 @@ jobs:
           cd ${{ env.helm_path }}
           yq -i ".image.tag = \"${SHORT_COMMIT}\"" values-dev.yaml
           git add values-dev.yaml
-          git commit -m "Auto update image tag to ${SHORT_COMMIT} from CI" || echo "No changes to commit"
+          git commit -m "Auto update image tag to ${SHORT_COMMIT} from github action CI" || echo "No changes to commit"
           git push origin develop
