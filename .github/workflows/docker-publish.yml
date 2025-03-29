@@ -34,7 +34,7 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.REGISTRY }}:${{ env.SHORT_COMMIT }}
+            ${{ secrets.REGISTRY }}:${{ steps.commit_hash.outputs.short_commit }}
       
   commit-to-another-repo:
     needs: build-and-push
