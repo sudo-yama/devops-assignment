@@ -56,7 +56,12 @@ jobs:
           cd devops-assignment-cd
           git checkout develop
           cd ${{ env.helm_path }}
-          yq -i '.image.tag = "${{ env.SHORT_COMMIT }}"' values-dev.yaml
+          TAG=${{ env.SHORT_COMMIT }}
+            if [ -z "$TAG" ]; then
+              echo "Error: SHORT_COMMIT is empty!"
+              exit 1
+            fi
+            yq -i ".image.tag = \"$TAG\"" values-dev.yaml
           git add values-dev.yaml
           git commit -m "Auto update image tag to ${{ env.SHORT_COMMIT }} from CI" || echo "No changes to commit"
           git push origin develop
